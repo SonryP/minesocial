@@ -1,6 +1,5 @@
 'use server'
 
-import { env } from "process";
 import { ActivationRequest } from "/@/types/activation";
 
 
@@ -12,7 +11,7 @@ export async function getUser(pretoken:string): Promise<string> {
         const response : string = await data.text();
         return response;
     };
-     let data:string = await fetchData();
+     const data:string = await fetchData();
      if(data) return data;
      return "";
 }
@@ -33,7 +32,7 @@ export async function activateUser(pretoken:string, digits:string, username:stri
         const response : string = await data.json();
         return response;
     };
-     let data = await fetchData();
+     const data = await fetchData();
      if(data) return { success: true, message: 'Activación correcta, redireccionando...' };
      return { success: false, message: 'Revisa los datos ingresados' };
 }

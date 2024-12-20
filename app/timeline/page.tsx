@@ -92,9 +92,9 @@ export default function Timeline() {
   };
 
   const convertImage=(image: string)=>{
-    var binary = atob(image);
-    var array = new Uint8Array(binary.length);
-    for (var i = 0; i < binary.length; i++) {
+    const binary = atob(image);
+    const array = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
         array[i] = binary.charCodeAt(i);
     }
     return new Blob([array]);

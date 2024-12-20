@@ -15,8 +15,8 @@ export async function login(credentials: LoginCredentials): Promise<LoginResult>
         const response = await data.json();
         return response;
     };
-    var data = await fetchData();
-    var isValid = false;
+    const data = await fetchData();
+    let isValid = false;
     if(data.status) isValid = false;
     if(data.token) {
         isValid = true;

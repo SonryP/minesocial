@@ -1,22 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useActionState } from 'react'
-import { register } from '../actions/register'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertCircle, CheckCircle2 } from 'lucide-react'
-import { ActivationRequest } from '/@/types/activation'
 import { activateUser } from '../actions/activate'
 import { useRouter } from 'next/navigation'
+import { Registration, RegistrationMessage } from '/@/types/registration'
 
-export default function RegistrationForm({username}:any) {
+export default function RegistrationForm({username}:Registration) {
   const [password, setPassword] = useState('')  
   const [digits, set4Digits] = useState('')  
   const [state, action, isPending] = useActionState(
-    async (_state: any, formData: FormData) => {
+    async (_state: RegistrationMessage, formData: FormData) => {
       const pretoken = localStorage.getItem('pretoken');
       const result = await activateUser(pretoken!, formData.get('4digits') as string, username, formData.get('password') as string);
       if (result.success) {
