@@ -4,7 +4,7 @@ import RegistrationForm from '../components/RegistrationForm'
 import { getUser } from '../actions/activate'
 import { Suspense, useEffect, useState } from 'react'
 
-export default function Home() {
+export default function Activation() {
   const [username, setUsername] = useState<string | null>(null);
   const searchParams = useSearchParams()
   useEffect(() => {
