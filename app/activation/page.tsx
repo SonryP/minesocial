@@ -2,7 +2,7 @@
 import { useSearchParams } from 'next/navigation'
 import RegistrationForm from '../components/RegistrationForm'
 import { getUser } from '../actions/activate'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 export default function Home() {
   const [username, setUsername] = useState<string | null>(null);
@@ -21,9 +21,7 @@ export default function Home() {
   }, []);
 
   return (
-    
-    
-
+   <Suspense>
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black bg-opacity-50">
       { username == null ?  <h1 className="text-4xl text-white font-bold mb-8">Cargando...</h1>
       :username == "" ? <h1 className="text-4xl text-white font-bold mb-8">Usuario ya activado!</h1>:
@@ -32,9 +30,8 @@ export default function Home() {
       <RegistrationForm username={username} />
     </>
       }
-      
-     
     </main>
+    </Suspense>
   )
 }
 
