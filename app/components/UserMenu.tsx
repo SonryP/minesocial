@@ -33,7 +33,7 @@ export function UserMenu({ username, avatarUrl }: UserMenuProps) {
         <Button variant="ghost" className="relative h-8 w-8 p-0 rounded-full">
           <Avatar className="h-8 w-8 p-0">
             <AvatarImage src={avatarUrl} alt={username} />
-            <AvatarFallback>{username.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{username}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

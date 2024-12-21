@@ -1,82 +1,56 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { ImagePlus, Send, Heart, Loader2 } from 'lucide-react'
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { formatDistance } from 'date-fns'
-import { es } from 'date-fns/locale'
-import { useRouter } from 'next/navigation'
-import { Post } from '/@/types/post'
-import { UserMenu } from '../components/UserMenu'
+import { useEffect, useState } from 'react';
+import { ImagePlus, Send, Heart, Loader2 } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatDistance } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { useRouter } from 'next/navigation';
+import { Post } from '/@/types/post';
+import { UserMenu } from '../components/UserMenu';
+import { createPost, fetchPosts } from '../actions/posts';
+
+export const dynamic = 'force-dynamic'; // Asegura que se renderice solo en el cliente
 
 export default function Timeline() {
   const [newImage, setNewImage] = useState<string | null>(null);
-  const [newPost, setNewPost] = useState<string>("");
+  const [newPost, setNewPost] = useState<string>('');
   const [posts, setPosts] = useState<Post[]>([]);
   const [isPosting, setIsPosting] = useState(false);
-  const router = useRouter();
-  const username = localStorage.getItem('username');
-  const userId = localStorage.getItem('userId');
+  const [username, setUsername] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const avatar = "https://crafatar.com/avatars/"+userId;
+
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
+    const storedUsername = localStorage.getItem('username');
+    const storedUserId = localStorage.getItem('userId');
+
     if (!token) {
-      router.push('/login'); // Redirect to login page if not logged in
+      router.push('/login');
     } else {
-      fetchData(token);
+      setUsername(storedUsername);
+      setUserId(storedUserId);
+      fetchPosts(token)
+      .then((data) => setPosts(data))
+      .catch((error) => console.error(error));
     }
-  }, []);
-
-  const fetchData = async (token:string) => {
-    const data = await fetch(process.env.API_URL +'/Post', {
-      method: 'GET', 
-      cache: 'no-store',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      } 
-    });
-    if(data.status === 200){
-      const response = await data.json();
-      setPosts(response);
-    }
-    
-  };
-
-
-  const createPost = async (token: string, postContent: string, image: string | null) => {
-    setIsPosting(true);
-    const postData = {
-      content: postContent,
-      imageData: image
-      // Add other necessary fields here
-    };
-
-    const response = await fetch(process.env.API_URL +'/Post', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(postData)
-    });
-
-    if (response.ok) {
-      const newPost: Post = await response.json();
-      setPosts((prevPosts) => [newPost, ...prevPosts]);
-      setIsPosting(false);
-    }
-    
-
-  };
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem('authToken');
     if (token) {
-      await createPost(token, newPost, newImage);
+      setIsPosting(true);
+      const newPostData = await createPost(token, newPost, newImage);
+      if (newPostData!) {
+        setPosts((prevPosts) => [newPostData, ...prevPosts]);
+      }
       setNewPost('');
       setNewImage(null);
+      setIsPosting(false);
     }
   };
 
@@ -91,15 +65,15 @@ export default function Timeline() {
     }
   };
 
-  const convertImage=(image: string)=>{
+  const convertImage = (image: string) => {
     const binary = atob(image);
     const array = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) {
-        array[i] = binary.charCodeAt(i);
+      array[i] = binary.charCodeAt(i);
     }
     return new Blob([array]);
-  }
-  
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-black bg-opacity-50">
 <header className="fixed top-0 left-0 right-0 bg-black shadow-sm z-10">
