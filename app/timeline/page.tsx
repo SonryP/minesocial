@@ -42,7 +42,7 @@ export default function Timeline() {
       setUsername(storedUsername);
       setUserId(storedUserId);
       fetchPosts(token)
-      .then((data) => {setPosts(data); console.log(data); setIsLoading(false); })
+      .then((data) => {setPosts(data); setIsLoading(false); })
       .catch((error) => console.error(error));
       
     }
