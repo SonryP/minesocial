@@ -53,7 +53,7 @@ export default function Timeline() {
     const token = localStorage.getItem('authToken');
     if (token) {
       if (newPost === "" && !newImage) {
-        alert("Por favor, escribe algo antes de postear");
+        alert("Por favor, escribe algo o adjunta imagen antes de postear");
         return;
       }
 
