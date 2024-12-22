@@ -5,6 +5,7 @@ export interface Post {
     likes: number
     user: User
     likesList: any
+    likedByUser: boolean
     attachment: any
     active: boolean
   }
