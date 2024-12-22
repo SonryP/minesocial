@@ -17,6 +17,7 @@ export function ImageModal({ isOpen, onClose, imageUrl }: ImageModalProps) {
           flex items-center justify-center 
           bg-black/70 
           p-2
+          z-50
         "
         aria-description="Full size image"
         aria-describedby="full-size-image"
