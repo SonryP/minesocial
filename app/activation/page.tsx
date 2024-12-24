@@ -5,7 +5,7 @@ import RegistrationForm from '../components/RegistrationForm';
 import { getUser } from '../actions/activate';
 import { useEffect, useState, Suspense } from 'react';
 
-export const dynamic = 'force-dynamic'; // Evita el prerenderizado estático.
+export const dynamic = 'force-dynamic';
 
 function ActivationContent() {
   const [username, setUsername] = useState<string | null>(null);
@@ -22,7 +22,7 @@ function ActivationContent() {
         }
       } catch (error) {
         console.error('Error fetching username:', error);
-        setUsername(''); // Manejo de fallback.
+        setUsername('');
       }
     };
     fetchUsername();

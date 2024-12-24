@@ -12,8 +12,9 @@ import { createPost, fetchPosts, likePost, unlikePost } from '../actions/posts';
 import { ImageModal } from '../components/ImageModal';
 import { PostSkeleton } from '../components/PostSkelleton';
 import Image from 'next/image';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '/@/components/ui/tooltip';
 
-export const dynamic = 'force-dynamic'; // Asegura que se renderice solo en el cliente
+export const dynamic = 'force-dynamic';
 
 export default function Timeline() {
   const [newImage, setNewImage] = useState<string | null>(null);
@@ -23,7 +24,9 @@ export default function Timeline() {
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
 
 
   const avatar = "https://crafatar.com/avatars/"+userId;
@@ -42,11 +45,22 @@ export default function Timeline() {
       setUsername(storedUsername);
       setUserId(storedUserId);
       fetchPosts(token)
-      .then((data) => {setPosts(data); setIsLoading(false); })
+      .then((data) => {setPosts(data); console.log(data); setIsLoading(false); })
       .catch((error) => console.error(error));
       
     }
   }, [router]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,29 +126,26 @@ export default function Timeline() {
 
   const handleLikeClick = async (postId: number, currentStatus: boolean) => {
     const token = localStorage.getItem('authToken');
-    if (!token) return; // Prevent actions without a valid token
+    if (!token) return;
 
     try {
       let success = false;
       setIsPosting(true);
       if (currentStatus) {
-        // If post is liked, call unlikePost
         success = await unlikePost(postId, token);
       } else {
-        // If post is not liked, call likePost
         success = await likePost(postId, token);
       }
 
       if (success) {
         setIsPosting(false);
-        // Update the likes state if the API call was successful
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post.id === postId
               ? {
                   ...post,
-                  likedByUser: !currentStatus, // Toggle the like status
-                  likes: currentStatus ? post.likes - 1 : post.likes + 1, // Increment or decrement likes count
+                  likedByUser: !currentStatus, 
+                  likes: currentStatus ? post.likes - 1 : post.likes + 1,
                 }
               : post
           )
@@ -169,9 +180,9 @@ export default function Timeline() {
 
 
 
-      <main className="flex-grow max-w-2xl w-full mx-auto flex flex-col mt-14"> {/* Added top margin to account for fixed header */}
+      <main className="flex-grow max-w-2xl w-full mx-auto flex flex-col mt-14">
         <ScrollArea className="flex-grow">
-          <div className="p-4 space-y-4 pb-44"> {/* Kept bottom padding for fixed create post area */}
+          <div className="p-4 space-y-4 pb-44">
           {posts.map((post) => {
               const imageUrl = postImageUrls.find((img) => img.id === post.id)?.url;
               return (
@@ -203,11 +214,43 @@ export default function Timeline() {
                       />
                     )}
                   </div>
-                  <div className="flex justify-between px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex px-4 py-2 border-t border-gray-200 dark:border-gray-700">
                   <button className="text-gray-600 dark:text-gray-400 hover:text-primary flex items-center" onClick={() => handleLikeClick(post.id, post.likedByUser)} disabled={isPosting}>
-                   {post.likedByUser? <Image width="18" height="18" alt='Like' src="/imgs/icons/heart-full.png" className='mr-2' />: <Image width="18" height="18" alt='Like' src="/imgs/icons/heart-empty.png" className='mr-2' />}
-                   {post.likes}
+                            {post.likedByUser ? <Image width="18" height="18" alt='Like' src="/imgs/icons/heart-full.png" className='mr-2' /> : <Image width="18" height="18" alt='Like' src="/imgs/icons/heart-empty.png" className='mr-2' />}
+                           
                   </button>
+                  
+                    {isMobile ? (
+                     <>
+                      <div className="flex items-start">{post.likes}</div>
+                      
+                     
+                      {post.likesList.map((like) => {
+                        return (
+                          <div key={like.id} className="flex items-center ml-2">
+                            <img src={`https://crafatar.com/avatars/${like.user.uuid}`} alt="User avatar" className="h-5 w-5" />
+                          </div>
+                        );
+                      })}</>
+                    ) : (
+                      <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                        <div className="flex items-start">{post.likes}</div>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                          {post.likesList.map((like) => {
+                            return (
+                              <div key={like.id} className="flex items-center p-2">
+                                <img src={`https://crafatar.com/avatars/${like.user.uuid}`} alt="User avatar" className="h-6 w-6" />
+                                <p className="ml-2">{like.user.username}</p>
+                              </div>
+                            );
+                          })}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    )}
                   {/* <button className="text-gray-600 dark:text-gray-400 hover:text-primary flex items-center">
                     <MessageCircle className="mr-2 h-4 w-4" /> {post.}
                   </button>

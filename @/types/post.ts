@@ -4,7 +4,7 @@ export interface Post {
     created: string
     likes: number
     user: User
-    likesList: any
+    likesList: Array<Like>
     likedByUser: boolean
     attachment: any
     active: boolean
@@ -15,4 +15,9 @@ export interface Post {
     username: string
     uuid: string
     active: boolean
+  }
+
+  export interface Like {
+    id: number
+    user: User
   }

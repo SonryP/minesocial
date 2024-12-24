@@ -23,7 +23,6 @@ export default function LoginPage() {
     const result = await login(credentials)
     setMessage(result.message)
     if (result.success && result.token && result.username && result.userId) {
-      // Redirect to dashboard or home page after successful login
       localStorage.setItem('authToken', result.token);
       localStorage.setItem('username', result.username);
       localStorage.setItem('userId', result.userId);
