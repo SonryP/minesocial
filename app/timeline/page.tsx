@@ -220,37 +220,15 @@ export default function Timeline() {
                            
                   </button>
                   
-                    {isMobile ? (
-                     <>
+                  <>
                       <div className="flex items-start">{post.likes}</div>
-                      
-                     
                       {post.likesList.map((like) => {
                         return (
                           <div key={like.id} className="flex items-center ml-2">
-                            <img src={`https://crafatar.com/avatars/${like.user.uuid}`} alt="User avatar" className="h-5 w-5" />
+                            <img src={`https://crafatar.com/avatars/${like.user.uuid}`} alt="User avatar" aria-describedby='userIcon' className="h-5 w-5" />
                           </div>
                         );
                       })}</>
-                    ) : (
-                      <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                        <div className="flex items-start">{post.likes}</div>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">
-                          {post.likesList.map((like) => {
-                            return (
-                              <div key={like.id} className="flex items-center p-2">
-                                <img src={`https://crafatar.com/avatars/${like.user.uuid}`} alt="User avatar" className="h-6 w-6" />
-                                <p className="ml-2">{like.user.username}</p>
-                              </div>
-                            );
-                          })}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    )}
                   {/* <button className="text-gray-600 dark:text-gray-400 hover:text-primary flex items-center">
                     <MessageCircle className="mr-2 h-4 w-4" /> {post.}
                   </button>
