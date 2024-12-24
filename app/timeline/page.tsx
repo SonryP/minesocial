@@ -12,7 +12,6 @@ import { createPost, fetchPosts, likePost, unlikePost } from '../actions/posts';
 import { ImageModal } from '../components/ImageModal';
 import { PostSkeleton } from '../components/PostSkelleton';
 import Image from 'next/image';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '/@/components/ui/tooltip';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +24,6 @@ export default function Timeline() {
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
 
 
 
@@ -51,16 +49,6 @@ export default function Timeline() {
     }
   }, [router]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
