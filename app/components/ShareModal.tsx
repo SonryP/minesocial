@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -9,8 +9,12 @@ import { ShareModalProps } from '/@/types/post'
 
 export function ShareModal({ isOpen, onClose, postHash }: ShareModalProps) {
   const [copied, setCopied] = useState(false)
-  const shareUrl = `${window.location.origin}/post?pid=${encodeURIComponent(postHash)}`
+  const [shareUrl, setShareUrl] = useState('');
 
+  useEffect(() => {
+    setShareUrl(`${window.location.origin}/post?pid=${encodeURIComponent(postHash)}`);
+  }, [postHash]);
+  
   const handleCopy = async () => {
     await navigator.clipboard.writeText(shareUrl)
     setCopied(true)

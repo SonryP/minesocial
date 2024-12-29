@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react';
-import { ImagePlus, Send, Loader2, Share2 } from 'lucide-react';
+import { ImagePlus, Send, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistance } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -158,8 +158,6 @@ export default function Timeline() {
       setIsPosting(true);
       const postHash = await sharePost(postId, token);
       setSelectedPostId(postHash.shareHash);
-      //    setSelectedPostId(postId)
-      //      setShareModalOpen(true)
 
       if (postHash) {
         setIsPosting(false);

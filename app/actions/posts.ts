@@ -1,6 +1,5 @@
 'use server';
 
-import { act } from 'react';
 import { Post, PostHash } from '/@/types/post';
 
 export async function fetchPosts(token: string): Promise<Post[]> {
@@ -97,31 +96,6 @@ export async function unlikePost(postId:number, token:string): Promise<boolean> 
   }
   
 }
-
-const posts: Record<string, Post> = {
-  'abc123': {
-    id: 1,
-    content: 'This is the content of my first post. It\'s amazing!',
-    user: { id: 1, username: 'alice', uuid: 'abc123', active: true },
-    likesList: [],
-    likes: 0,
-    likedByUser: false,
-    attachment: null,
-    active: true,
-    created: '2021-01-01T12:00:00Z'
-  },
-  'def456': {
-    id: 1,
-    content: 'Andan compartiendo cosas...',
-    user: { id: 2, username: 'notch', uuid: '069a79f444e94726a5befca90e38aaf5', active: true },
-    likesList: [],
-    likes: 0,
-    likedByUser: false,
-    attachment: null,
-    active: true,
-    created: '2021-01-02T12:00:00Z'
-  }
-};
 
 export async function getPost(hash: string): Promise<Post | null> {
   try {
