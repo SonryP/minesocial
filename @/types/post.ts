@@ -21,3 +21,17 @@ export interface Post {
     id: number
     user: User
   }
+
+  export interface PostProp{
+    post?: Post
+  }
+
+  export interface PostHash {
+    shareHash: string
+  }
+
+  export interface ShareModalProps {
+    isOpen: boolean
+    onClose: () => void
+    postHash: string
+  }

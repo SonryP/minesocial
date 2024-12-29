@@ -11,11 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-
-interface UserMenuProps {
-  username: string
-  avatarUrl: string
-}
+import { UserMenuProps } from '/@/types/userMenu'
 
 export function UserMenu({ username, avatarUrl }: UserMenuProps) {
   const [open, setOpen] = useState(false)

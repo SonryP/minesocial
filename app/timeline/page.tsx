@@ -1,17 +1,18 @@
-'use client';
+'use client'
 
 import { useEffect, useMemo, useState } from 'react';
-import { ImagePlus, Send, Loader2 } from 'lucide-react';
+import { ImagePlus, Send, Loader2, Share2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistance } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
 import { Post } from '/@/types/post';
-import { UserMenu } from '../components/UserMenu';
-import { createPost, fetchPosts, likePost, unlikePost } from '../actions/posts';
+import { createPost, fetchPosts, likePost, sharePost, unlikePost } from '../actions/posts';
 import { ImageModal } from '../components/ImageModal';
 import { PostSkeleton } from '../components/PostSkelleton';
 import Image from 'next/image';
+import { Header } from '../components/Header';
+import { ShareModal } from '../components/ShareModal';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +25,9 @@ export default function Timeline() {
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+
 
 
 
@@ -69,6 +73,7 @@ export default function Timeline() {
       setIsPosting(false);
     }
   };
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -144,26 +149,30 @@ export default function Timeline() {
     }
   };
 
+  const handleShareClick = async (postId: number) => {
+    
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+
+    try {
+      setIsPosting(true);
+      const postHash = await sharePost(postId, token);
+      setSelectedPostId(postHash.shareHash);
+      //    setSelectedPostId(postId)
+      //      setShareModalOpen(true)
+
+      if (postHash) {
+        setIsPosting(false);
+        setShareModalOpen(true);
+      }
+    } catch (error) {
+      console.error("Error handling like/unlike:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-black bg-opacity-50">
-<header className="fixed top-0 left-0 right-0 bg-black shadow-sm z-10">
-  {/* Dirt background */}
-  <div className="absolute inset-0 bg-block-grass-side opacity-40 z-0"></div>
-
-  {/* Lighter gradient */}
-  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-gray/50 to-white mix-blend-overlay z-0"></div>
-
-
-  {/* Content */}
-  <div className="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center h-12">
-
-    <h1 className="text-2xl font-bold text-white dark:text-white">PicosPost</h1>
-    <UserMenu username={username!} avatarUrl={avatar} />
-
-  </div>
-
- 
-</header>
+      <Header username={username!} avatarUrl={avatar} />
 
 
 
@@ -220,9 +229,14 @@ export default function Timeline() {
                   {/* <button className="text-gray-600 dark:text-gray-400 hover:text-primary flex items-center">
                     <MessageCircle className="mr-2 h-4 w-4" /> {post.}
                   </button>
-                  <button className="text-gray-600 dark:text-gray-400 hover:text-primary flex items-center">
-                    <Share2 className="mr-2 h-4 w-4" /> {post.shares}
-                  </button> */}
+                  */}
+                  {
+                    post.user.uuid === userId && ( 
+                      <button className="ml-auto text-gray-600 dark:text-gray-400 hover:text-primary flex items-center" onClick={() => handleShareClick(post.id)}>
+                      <Image width="24" height="24" alt='Share' src="/imgs/icons/next-page.png" className='mr-2' />
+                    </button>
+                    )
+                  }
                 </div>
                 </div>
               );
@@ -293,6 +307,11 @@ export default function Timeline() {
         isOpen={!!selectedImage} 
         onClose={() => setSelectedImage(null)} 
         imageUrl={selectedImage || undefined}
+      />
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        postHash={selectedPostId || ''}
       />
     </div>
   )
