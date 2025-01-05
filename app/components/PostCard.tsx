@@ -6,10 +6,13 @@ import { formatDistance } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { ImageModal } from './ImageModal'
 import { PostProp } from '/@/types/post'
+import { useLocale } from './Locale'
 
 export default function PostCard(postProp:PostProp) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const post = postProp.post;
+  const locale = useLocale("share");
+
   const handleImageClick = (imageUrl: string) => {
     setSelectedImage(imageUrl)
   }
@@ -32,7 +35,7 @@ export default function PostCard(postProp:PostProp) {
     
 
   if (!post?.active) {
-    return <div>No se ha encontrado el post compartido!</div>
+    return <div>{locale.postNotFound}</div>
   }
 
   return (
@@ -40,7 +43,7 @@ export default function PostCard(postProp:PostProp) {
                   key={post.id}
                   className="achievement-panel dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden"
                 >
-                  {post.user.username} ha compartido esto contigo!
+                  {post.user.username} {locale.sharedWithYou}
                   <div className="p-4">
                     
                     <div className="flex items-center">
@@ -81,7 +84,7 @@ export default function PostCard(postProp:PostProp) {
                           </div>
                         );
                       })}</>
-                <a href="/login" className='ml-6'>Crea tu cuenta o inicia sesión para interactuar!</a>
+                <a href="/login" className='ml-6'>{locale.createAccountOrLogin}</a>
                 </div>
                       <ImageModal 
                         isOpen={!!selectedImage} 

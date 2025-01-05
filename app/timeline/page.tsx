@@ -13,27 +13,34 @@ import { PostSkeleton } from '../components/PostSkelleton';
 import Image from 'next/image';
 import { Header } from '../components/Header';
 import { ShareModal } from '../components/ShareModal';
+import { useLocale } from '../components/Locale';
 
 export const dynamic = 'force-dynamic';
 
 export default function Timeline() {
+  const locale = useLocale('timeline');
   const [newImage, setNewImage] = useState<string | null>(null);
   const [newPost, setNewPost] = useState<string>('');
   const [posts, setPosts] = useState<Post[]>([]);
   const [isPosting, setIsPosting] = useState(false);
+  const [postingText, setPostingText] = useState(locale.posting);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
-
-
-
+  const [whatHappend, setWhatHappend] = useState<string | null>("");
 
   const avatar = "https://crafatar.com/avatars/"+userId;
 
   const router = useRouter();
+
+  useEffect(() => {
+    const randomWhatHappend = locale.whatHappend[Math.floor(Math.random() * locale.whatHappend.length)];
+    setWhatHappend(randomWhatHappend);
+
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -59,7 +66,7 @@ export default function Timeline() {
     const token = localStorage.getItem('authToken');
     if (token) {
       if (newPost === "" && !newImage) {
-        alert("Por favor, escribe algo o adjunta imagen antes de postear");
+        alert(locale.writeSomething);
         return;
       }
 
@@ -123,6 +130,7 @@ export default function Timeline() {
 
     try {
       let success = false;
+      setPostingText(locale.updating);
       setIsPosting(true);
       if (currentStatus) {
         success = await unlikePost(postId, token);
@@ -132,6 +140,7 @@ export default function Timeline() {
 
       if (success) {
         setIsPosting(false);
+      setPostingText(locale.posting);
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post.id === postId
@@ -155,12 +164,14 @@ export default function Timeline() {
     if (!token) return;
 
     try {
+      setPostingText(locale.sharing);
       setIsPosting(true);
       const postHash = await sharePost(postId, token);
       setSelectedPostId(postHash.shareHash);
 
       if (postHash) {
         setIsPosting(false);
+        setPostingText(locale.posting);
         setShareModalOpen(true);
       }
     } catch (error) {
@@ -249,12 +260,12 @@ export default function Timeline() {
           </div>
         </ScrollArea>
 
-        <div className="fixed bottom-0 panel left-0 right-0 dark:bg-gray-800 shadow-lg z-10">
+        <div className="fixed bottom-0 panel lg:left-1/4 lg:w-1/2 left-0 right-0 md:w-full dark:bg-gray-800 shadow-lg z-10">
           <div className="max-w-2xl mx-auto">
             <form onSubmit={handleSubmit} className="p-4">
               <div className="mb-4">
                 <textarea
-                  placeholder="Que sucede?"
+                  placeholder={whatHappend!}
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
                   className="w-full anvil-textbox p-2 bg-gray-50 placeholder:text-black dark:bg-gray-700 text-white dark:text-black rounded-md border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
@@ -280,7 +291,7 @@ export default function Timeline() {
                     disabled={isPosting}
                     className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-white rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
                   >
-                    <ImagePlus className="inline-block mr-2 h-4 w-4" /> Adjunta captura!
+                    <ImagePlus className="inline-block mr-2 h-4 w-4" /> {locale.attachScreenshot}
                   </button>
                 </div>
                 <button type="submit" disabled={isPosting} className="px-4 py-2 button bg-primary text-primary-foreground rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
@@ -289,11 +300,11 @@ export default function Timeline() {
                   {isPosting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 inline animate-spin" />
-                      Posteando...
+                      {postingText}
                     </>
                   ) : (
                     <>
-                   <Send className="inline-block mr-2 h-4 w-4" /> Postear </>
+                   <Send className="inline-block mr-2 h-4 w-4" /> {locale.post} </>
                   )}
                 </button>
               </div>

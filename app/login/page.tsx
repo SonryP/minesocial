@@ -9,11 +9,13 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoginCredentials } from '@/types/auth'
 import { Loader2 } from 'lucide-react'
+import { useLocale } from '../components/Locale';
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState<LoginCredentials>({ username: '', password: '' })
   const [message, setMessage] = useState('')
   const [isLogin, setIsLogin] = useState(false);
+  const locale = useLocale("login");
 
   const router = useRouter()
 
@@ -36,14 +38,14 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 bg-teal-800 bg-opacity-40">
       <Card className="w-[350px] panel p-4">
         <CardHeader>
-          <CardTitle>Inicia Sesión</CardTitle>
-          <CardDescription>Ingresa tus datos para comenzar.</CardDescription>
+          <CardTitle>{locale.loginTitle}</CardTitle>
+          <CardDescription>{locale.loginDescription}</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="username">Usuario</Label>
+                <Label htmlFor="username">{locale.username}</Label>
                 <Input 
                   id="username"
                   className='anvil-textbox placeholder:text-black dark:bg-gray-700 text-white'
@@ -53,7 +55,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5 mb-2">
-                <Label htmlFor="password">Contraseña</Label>
+                <Label htmlFor="password">{locale.password}</Label>
                 <Input 
                   id="password"
                   className='anvil-textbox placeholder:text-black dark:bg-gray-700 text-white' 
@@ -70,11 +72,11 @@ export default function LoginPage() {
             {isLogin ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 inline animate-spin" />
-                      Comprobando credenciales...
+                      {locale.checkingCredentials}
                     </>
                   ) : (
                     <>
-                   Iniciar Sesión </>
+                   {locale.login} </>
                   )}
               
               </Button>

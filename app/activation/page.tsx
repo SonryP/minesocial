@@ -4,12 +4,14 @@ import { useSearchParams } from 'next/navigation';
 import RegistrationForm from '../components/RegistrationForm';
 import { getUser } from '../actions/activate';
 import { useEffect, useState, Suspense } from 'react';
+import { useLocale } from '../components/Locale';
 
 export const dynamic = 'force-dynamic';
 
 function ActivationContent() {
   const [username, setUsername] = useState<string | null>(null);
   const searchParams = useSearchParams();
+  const locale = useLocale("activation");
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -29,16 +31,16 @@ function ActivationContent() {
   }, [searchParams]);
 
   if (username === null) {
-    return <h1 className="text-4xl text-white font-bold mb-8">Cargando...</h1>;
+    return <h1 className="text-4xl text-white font-bold mb-8">{locale.loadingText}</h1>;
   }
 
   if (username === '') {
-    return <h1 className="text-4xl text-white font-bold mb-8">Usuario ya activado!</h1>;
+    return <h1 className="text-4xl text-white font-bold mb-8">{locale.userActivated}</h1>;
   }
 
   return (
     <>
-      <h1 className="text-4xl text-white font-bold mb-8">Bienvenido, {username}!</h1>
+      <h1 className="text-4xl text-white font-bold mb-8">{locale.welcome} {username}!</h1>
       <RegistrationForm username={username} />
     </>
   );
@@ -46,10 +48,16 @@ function ActivationContent() {
 
 export default function Activation() {
   return (
-    <Suspense fallback={<h1 className="text-4xl text-white font-bold mb-8">Cargando...</h1>}>
+    <Suspense fallback={<LoadingFallback />}>
       <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-black bg-opacity-50">
         <ActivationContent />
       </main>
     </Suspense>
   );
+}
+
+function LoadingFallback(){
+  const locale = useLocale("activation");
+  return <h1 className="text-4xl text-white font-bold mb-8">{locale.loadingText}
+  </h1>;
 }

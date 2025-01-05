@@ -12,12 +12,13 @@ import {
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { UserMenuProps } from '/@/types/userMenu'
+import { useLocale } from './Locale'
 
 export function UserMenu({ username, avatarUrl }: UserMenuProps) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
+  const locale = useLocale("userMenu");
   const handleLogout = () => {
-    // Implement logout logic here
     
     localStorage.clear();
     router.push('/login')
@@ -39,7 +40,7 @@ export function UserMenu({ username, avatarUrl }: UserMenuProps) {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Cerrar Sesión</span>
+          <span>{locale.logout}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

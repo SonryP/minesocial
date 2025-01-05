@@ -10,6 +10,7 @@ import { AlertCircle, CheckCircle2 } from 'lucide-react'
 import { activateUser } from '../actions/activate'
 import { useRouter } from 'next/navigation'
 import { Registration, RegistrationMessage } from '/@/types/registration'
+import { useLocale } from './Locale'
 
 export default function RegistrationForm({username}:Registration) {
   const [password, setPassword] = useState('')  
@@ -26,6 +27,8 @@ export default function RegistrationForm({username}:Registration) {
     { success: true, message: '' } // Initial state
   );
 
+  const locale = useLocale("registration");
+
   const router = useRouter();
 
 
@@ -33,14 +36,14 @@ export default function RegistrationForm({username}:Registration) {
   return (
     <Card className="w-full max-w-md p-4">
       <CardHeader>
-        <CardTitle>Completa tu registro</CardTitle>
-        <CardDescription>Favor completa el registro de tu usuario en Minesocial.</CardDescription>
+        <CardTitle>{locale.registrationTitle}</CardTitle>
+        <CardDescription>{locale.registrationDescription}</CardDescription>
       </CardHeader>
       <form action={action}>
         <CardContent>
           <div className="space-y-4">
           <div className="space-y-2">
-              <Label htmlFor="4digits">4 Digitos</Label>
+              <Label htmlFor="4digits">{locale.fourDigits}</Label>
               <Input 
                 id="4digits" 
                 name="4digits" 
@@ -52,7 +55,7 @@ export default function RegistrationForm({username}:Registration) {
               />
             </div>
             <div className="space-y-2 mb-4">
-              <Label htmlFor="password">Contraseña</Label>
+              <Label htmlFor="password">{locale.password}</Label>
               <Input 
                 id="password" 
                 name="password" 
@@ -67,7 +70,7 @@ export default function RegistrationForm({username}:Registration) {
         </CardContent>
         <CardFooter className="flex flex-col mt-4 items-start space-y-4">
           <Button type="submit" className="w-full button" disabled={isPending}>
-            {isPending ? 'Registrando...' : 'Registrar'}
+            {isPending ? locale.registering : locale.register}
           </Button>
           {state.message && (
             <div className={`flex items-center space-x-2 ${state.success ? 'text-green-600' : 'text-red-600'}`}>

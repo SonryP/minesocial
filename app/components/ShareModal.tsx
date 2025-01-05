@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Check, Copy } from 'lucide-react'
 import { ShareModalProps } from '/@/types/post'
+import { useLocale } from './Locale'
 
 
 
 export function ShareModal({ isOpen, onClose, postHash }: ShareModalProps) {
   const [copied, setCopied] = useState(false)
   const [shareUrl, setShareUrl] = useState('');
+  const locale = useLocale("share");
 
   useEffect(() => {
     setShareUrl(`${window.location.origin}/post?pid=${encodeURIComponent(postHash)}`);
@@ -22,24 +24,26 @@ export function ShareModal({ isOpen, onClose, postHash }: ShareModalProps) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="panel 
-          fixed inset-0 h-20  sm:max-w-md top-1/2 left-1/3 z-50">
-        <DialogHeader>
-          <DialogTitle>Comparte este post</DialogTitle>
-        </DialogHeader>
-        <div className="flex items-center space-x-2">
-          <Input
-            readOnly
-            value={shareUrl}
-            className="flex-1"
-          />
-          <Button size="icon" onClick={handleCopy}>
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+<Dialog open={isOpen} onOpenChange={onClose}>
+  <DialogContent 
+    className="fixed panel inset-4 sm:inset-0 sm:w-[400px] h-40 sm:left-1/2 sm:-translate-x-1/2 md:top-1/2 sm:top-1/16-block sm:-translate-y-1/2 z-50 shadow-lg p-4"
+  >
+    <DialogHeader>
+      <DialogTitle>{locale.shareThisPost}</DialogTitle>
+    </DialogHeader>
+    <div className="flex items-center space-x-2 mt-4">
+      <Input
+        readOnly
+        value={shareUrl}
+        className="flex-1 anvil-textbox"
+      />
+      <Button size="icon" onClick={handleCopy}>
+        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+      </Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
   )
 }
 

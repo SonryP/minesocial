@@ -4,11 +4,13 @@ import PostCard from '../components/PostCard'
 import { useSearchParams } from 'next/navigation'
 import { getPost } from '../actions/posts'
 import { Post } from '/@/types/post'
+import { useLocale } from '../components/Locale'
 
 function PostContent() {
   const [post, setPost] = useState<Post | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const searchParams = useSearchParams()
+  const locale = useLocale("share")
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -30,11 +32,11 @@ function PostContent() {
   }, [searchParams])
 
   if (isLoading) {
-    return <div>Cargando post...</div>
+    return <div>{locale.loadingPost}</div>
   }
 
   if (!post) {
-    return <div>No se ha encontrado el post compartido!</div>
+    return <div>{locale.postNotFound}</div>
   }
 
   return <PostCard post={post!} />
@@ -42,10 +44,12 @@ function PostContent() {
 
 export default function PostPage() {
   return (
-    <Suspense fallback={<div>Cargando...</div>}>
+    <Suspense fallback={<div>...</div>}>
       <main className="bg-block-wool-gray text-white flex min-h-screen flex-col items-center justify-center p-8">
         <PostContent />
       </main>
     </Suspense>
   )
 }
+
+

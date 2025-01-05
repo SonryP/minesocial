@@ -1,6 +1,7 @@
 'use server'
 
 import { LoginCredentials, LoginResult } from '@/types/auth';
+import { locales } from '/@/types/locales';
 
 export async function login(credentials: LoginCredentials): Promise<LoginResult> {
     const fetchData = async () => {
@@ -23,8 +24,8 @@ export async function login(credentials: LoginCredentials): Promise<LoginResult>
     }
 
   if (isValid) {
-    return { success: true, message: 'Inicio correcto, redireccionando...', token: data.token, username: data.username, userId: data.userId };
+    return { success: true, message: locales.apiMessages.loginComplete, token: data.token, username: data.username, userId: data.userId };
   } else {
-    return { success: false, message: 'Revisa los datos ingresados' };
+    return { success: false, message: locales.apiMessages.checkData };
   }
 }
