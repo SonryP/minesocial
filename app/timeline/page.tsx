@@ -199,7 +199,7 @@ export default function Timeline() {
                   <div className="p-4">
                     <div className="flex items-center">
                       <div className="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 mr-4">
-                        <img src={`https://crafatar.com/avatars/${post.user.uuid}`} alt="User avatar" />
+                        <Image width="0" height="0" quality="90" className='h-10 w-10' src={`https://crafatar.com/avatars/${post.user.uuid}`} alt="User avatar" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 dark:text-white">{post.user.username}</h3>
@@ -212,7 +212,9 @@ export default function Timeline() {
                   <div className="px-4 pb-4">
                     <p className="mb-4 text-gray-700 dark:text-gray-300">{post.content}</p>
                     {imageUrl && (
-                      <img
+                      <Image
+                        width="0"
+                        height="0"
                         src={imageUrl}
                         alt="Post image"
                         className="rounded-lg max-h-96 w-full object-cover"
@@ -231,7 +233,7 @@ export default function Timeline() {
                       {post.likesList.map((like) => {
                         return (
                           <div key={like.id} className="flex items-center ml-2">
-                            <img src={`https://crafatar.com/avatars/${like.user.uuid}`} alt="User avatar" aria-describedby='userIcon' className="h-5 w-5" />
+                            <Image width="24" height="24" src={`https://crafatar.com/avatars/${like.user.uuid}`} alt="User avatar" aria-describedby='userIcon' className="h-5 w-5" />
                           </div>
                         );
                       })}</>
@@ -273,7 +275,7 @@ export default function Timeline() {
                   disabled={isPosting}
                 />
                 {newImage && (
-                  <img src={newImage} alt="Uploaded preview" className="mt-2 rounded-lg max-h-40 object-cover" />
+                  <Image width="0" height="0" src={newImage} alt="Uploaded preview" className="mt-2 rounded-lg max-h-40 object-cover" />
                 )}
               </div>
               <div className="flex justify-between items-center">

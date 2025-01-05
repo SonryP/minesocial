@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog"
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog"
+import Image from "next/image"
 
 interface ImageModalProps {
   isOpen: boolean
@@ -29,7 +30,9 @@ export function ImageModal({ isOpen, onClose, imageUrl }: ImageModalProps) {
           <DialogDescription id="full-size-image" className="hidden">Full size image</DialogDescription>
 
           {imageUrl && (
-            <img 
+            <Image
+              width="0"
+              height="0"
               src={imageUrl} 
               alt="Full size image" 
               className="w-full h-full object-contain pointer-events-none"
